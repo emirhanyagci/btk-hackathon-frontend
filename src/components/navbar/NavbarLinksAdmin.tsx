@@ -19,15 +19,11 @@ import { SearchBar } from '@/components/navbar/searchBar/SearchBar';
 import { SidebarResponsive } from '@/components/sidebar/Sidebar';
 import { IoMdMoon, IoMdSunny } from 'react-icons/io';
 import { MdInfoOutline } from 'react-icons/md';
-import APIModal from '@/components/apiModal';
 import NavLink from '../link/NavLink';
 import routes from '@/routes';
 
-export default function HeaderLinks(props: {
-  secondary: boolean;
-  setApiKey: any;
-}) {
-  const { secondary, setApiKey } = props;
+export default function HeaderLinks(props: { secondary: boolean }) {
+  const { secondary } = props;
   const { colorMode, toggleColorMode } = useColorMode();
   // Chakra Color Mode
   const navbarIcon = useColorModeValue('gray.500', 'white');
@@ -71,7 +67,6 @@ export default function HeaderLinks(props: {
         borderRadius="30px"
       />
       <SidebarResponsive routes={routes} />
-      <APIModal setApiKey={setApiKey} />
 
       <Menu>
         <MenuButton p="0px">
