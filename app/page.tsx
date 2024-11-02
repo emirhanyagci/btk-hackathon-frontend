@@ -19,8 +19,11 @@ import {
 } from '@chakra-ui/react';
 
 import Bg from '../public/img/chat/bg-image.png';
+import { UseAuthContext } from '@/contexts/AuthContext';
 
 export default function Chat() {
+  const { value } = UseAuthContext();
+  const { isLoggedIn } = value;
   return (
     <Flex
       w="100%"
@@ -52,7 +55,7 @@ export default function Chat() {
           width={150}
           colorScheme="green"
         >
-          Start Chat
+          {!isLoggedIn ? 'Start Chat' : 'Login to start chat'}
         </Badge>
       </Flex>
     </Flex>
