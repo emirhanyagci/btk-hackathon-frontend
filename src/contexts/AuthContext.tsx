@@ -2,8 +2,8 @@ import { useState, createContext, useContext } from 'react';
 
 const AuthContext = createContext({});
 
-export const AuthContextProvider = ({ children }) => {
-  const [value, setValue] = useState({ isLoggedIn: false, token: null });
+export const AuthContextProvider = ({ children }: { children: any }) => {
+  const [value, setValue] = useState<any>({ isLoggedIn: false, token: null });
   return (
     <AuthContext.Provider value={{ value, setValue }}>
       {children}
@@ -12,6 +12,6 @@ export const AuthContextProvider = ({ children }) => {
 };
 
 export const UseAuthContext = () => {
-  const context = useContext(AuthContext);
+  const context = useContext<any>(AuthContext);
   return context;
 };

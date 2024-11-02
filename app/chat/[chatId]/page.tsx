@@ -122,16 +122,6 @@ export default function Chat() {
 
     setLoading(false);
   };
-  // -------------- Copy Response --------------
-
-  // *** Initializing apiKey with .env.local value
-  // useEffect(() => {
-  // ENV file verison
-  // const apiKeyENV = process.env.NEXT_PUBLIC_OPENAI_API_KEY
-  // if (apiKey === undefined || null) {
-  //   setApiKey(apiKeyENV)
-  // }
-  // }, [])
 
   const handleChange = (Event: any) => {
     setInputCode(Event.target.value);
@@ -169,68 +159,78 @@ export default function Chat() {
           ref={scrollRef}
           scrollBehavior={'smooth'}
         >
-          {messages.map((message, index) => (
-            <Flex key={index} direction="column" w="100%" mx="auto" mb={'auto'}>
-              <Flex w="100%" align={'center'} mb="10px">
-                <Flex
-                  borderRadius="full"
-                  justify="center"
-                  align="center"
-                  bg={'transparent'}
-                  border="1px solid"
-                  borderColor={borderColor}
-                  me="20px"
-                  h="40px"
-                  minH="40px"
-                  minW="40px"
-                >
-                  <Icon
-                    as={MdPerson}
-                    width="20px"
-                    height="20px"
-                    color={brandColor}
-                  />
-                </Flex>
-                <Flex
-                  p="22px"
-                  border="1px solid"
-                  borderColor={borderColor}
-                  borderRadius="14px"
-                  w="100%"
-                  zIndex={'2'}
-                >
-                  <Text
-                    color={textColor}
-                    fontWeight="600"
-                    fontSize={{ base: 'sm', md: 'md' }}
-                    lineHeight={{ base: '24px', md: '26px' }}
+          {messages.map(
+            (message: { prompt: string; answer: string }, index: number) => (
+              <Flex
+                key={index}
+                direction="column"
+                w="100%"
+                mx="auto"
+                mb={'auto'}
+              >
+                <Flex w="100%" align={'center'} mb="10px">
+                  <Flex
+                    borderRadius="full"
+                    justify="center"
+                    align="center"
+                    bg={'transparent'}
+                    border="1px solid"
+                    borderColor={borderColor}
+                    me="20px"
+                    h="40px"
+                    minH="40px"
+                    minW="40px"
                   >
-                    {message.prompt}
-                  </Text>
+                    <Icon
+                      as={MdPerson}
+                      width="20px"
+                      height="20px"
+                      color={brandColor}
+                    />
+                  </Flex>
+                  <Flex
+                    p="22px"
+                    border="1px solid"
+                    borderColor={borderColor}
+                    borderRadius="14px"
+                    w="100%"
+                    zIndex={'2'}
+                  >
+                    <Text
+                      color={textColor}
+                      fontWeight="600"
+                      fontSize={{ base: 'sm', md: 'md' }}
+                      lineHeight={{ base: '24px', md: '26px' }}
+                    >
+                      {message.prompt}
+                    </Text>
+                  </Flex>
+                </Flex>
+                <Flex w="100%">
+                  <Flex
+                    borderRadius="full"
+                    justify="center"
+                    align="center"
+                    bg={
+                      'linear-gradient(15.46deg, #4A25E1 26.3%, #7B5AFF 86.4%)'
+                    }
+                    me="20px"
+                    h="40px"
+                    minH="40px"
+                    minW="40px"
+                  >
+                    <Icon
+                      as={MdAutoAwesome}
+                      width="20px"
+                      height="20px"
+                      color="white"
+                    />
+                  </Flex>
+                  <MessageBoxChat output={message.answer} />
                 </Flex>
               </Flex>
-              <Flex w="100%">
-                <Flex
-                  borderRadius="full"
-                  justify="center"
-                  align="center"
-                  bg={'linear-gradient(15.46deg, #4A25E1 26.3%, #7B5AFF 86.4%)'}
-                  me="20px"
-                  h="40px"
-                  minH="40px"
-                  minW="40px"
-                >
-                  <Icon
-                    as={MdAutoAwesome}
-                    width="20px"
-                    height="20px"
-                    color="white"
-                  />
-                </Flex>
-                <MessageBoxChat output={message.answer} />
-              </Flex>
-            </Flex>
-          ))}
+            ),
+          )}
         </Flex>
         {/* Chat Input */}
         <Flex

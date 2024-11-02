@@ -41,7 +41,7 @@ function SidebarContent(props: SidebarContent) {
   const { value, setValue } = UseAuthContext();
   const { isLoggedIn, token } = value;
   const router = useRouter();
-  const [chats, setChats] = useState([]);
+  const [chats, setChats] = useState<any>([]);
   const textColor = useColorModeValue('navy.700', 'white');
   const borderColor = useColorModeValue('gray.200', 'whiteAlpha.300');
   const bgColor = useColorModeValue('white', 'navy.700');
