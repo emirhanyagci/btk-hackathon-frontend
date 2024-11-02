@@ -109,31 +109,33 @@ function SidebarContent(props: SidebarContent) {
           </Button>
         </Flex>
       </Stack>
-      <Stack>
-        <Flex direction="column" justify="space-between" gap={2}>
-          {chats.map((chat: any) => (
-            <Link key={chat.chat_id} href={`/chat/${chat.chat_id}`}>
-              <Box
-                py={2}
-                px={2}
-                _hover={{ bg: 'rgb(237, 235, 230,0.3)' }}
-                cursor="pointer"
-                transition="background-color 0.3s ease"
-                rounded={5}
-              >
-                {chat.name || 'New Chat'}
-              </Box>
-            </Link>
-          ))}
-        </Flex>
-      </Stack>
+      {isLoggedIn && (
+        <Stack>
+          <Flex direction="column" justify="space-between" gap={2}>
+            {chats.map((chat: any) => (
+              <Link key={chat.chat_id} href={`/chat/${chat.chat_id}`}>
+                <Box
+                  py={2}
+                  px={2}
+                  _hover={{ bg: 'rgb(237, 235, 230,0.3)' }}
+                  cursor="pointer"
+                  transition="background-color 0.3s ease"
+                  rounded={5}
+                >
+                  {chat.name || 'New Chat'}
+                </Box>
+              </Link>
+            ))}
+          </Flex>
+        </Stack>
+      )}
       <Stack direction="column" mb="auto" mt="8px">
         {/* <Box ps="0px" pe={{ md: '0px', '2xl': '0px' }}>
           <Links routes={routes} />
         </Box> */}
       </Stack>
 
-      {value.isLoggedIn && (
+      {isLoggedIn && (
         <Flex
           mt="8px"
           justifyContent="center"
