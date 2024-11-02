@@ -6,10 +6,6 @@ import {
   Button,
   Flex,
   Icon,
-  Link,
-  Menu,
-  MenuButton,
-  MenuList,
   Stack,
   Text,
   useColorModeValue,
@@ -21,13 +17,18 @@ import { NextAvatar } from '@/components/image/Avatar';
 import Brand from '@/components/sidebar/components/Brand';
 import Links from '@/components/sidebar/components/Links';
 import { RoundedChart } from '@/components/icons/Icons';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import { IRoute } from '@/types/navigation';
 import { IoMdPerson } from 'react-icons/io';
 import { FiLogOut } from 'react-icons/fi';
 import { LuHistory } from 'react-icons/lu';
 import { MdOutlineManageAccounts, MdOutlineSettings } from 'react-icons/md';
-
+import NewChat from '@/components/icons/NewChat';
+import { UseAuthContext } from '@/contexts/AuthContext';
+import axios from 'axios';
+import { RESPONSE_LIMIT_DEFAULT } from 'next/dist/server/api-utils';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 // FUNCTIONS
 
 interface SidebarContent extends PropsWithChildren {
@@ -37,6 +38,10 @@ interface SidebarContent extends PropsWithChildren {
 
 function SidebarContent(props: SidebarContent) {
   const { routes, setApiKey } = props;
+  const { value, setValue } = UseAuthContext();
+  const { isLoggedIn, token } = value;
+  const router = useRouter();
+  const [chats, setChats] = useState([]);
   const textColor = useColorModeValue('navy.700', 'white');
   const borderColor = useColorModeValue('gray.200', 'whiteAlpha.300');
   const bgColor = useColorModeValue('white', 'navy.700');
@@ -51,6 +56,40 @@ function SidebarContent(props: SidebarContent) {
   );
   const gray = useColorModeValue('gray.500', 'white');
   // SIDEBAR
+  async function fetchChats() {
+    try {
+      const res = await axios.get('/api/chats', {
+        params: { token },
+      });
+      console.log(res.data);
+
+      setChats([...res.data]);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    fetchChats();
+  }, [isLoggedIn]);
+  async function newChatHandler() {
+    try {
+      const res = await axios.post('/api/chat', {
+        token,
+      });
+      fetchChats();
+
+      console.log(res);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+  function logoutHandler() {
+    router.push('/login');
+    setTimeout(() => {
+      setValue({ isLoggedIn: false, token: '' });
+    }, 500);
+  }
   return (
     <Flex
       direction="column"
@@ -62,213 +101,65 @@ function SidebarContent(props: SidebarContent) {
       px="20px"
     >
       <Brand />
+      <Stack mb="25px">
+        <Flex justify="space-between" alignItems="center">
+          {isLoggedIn ? 'New Chat' : 'Login for chat'}
+          <Button onClick={newChatHandler} disabled={!isLoggedIn}>
+            <NewChat />
+          </Button>
+        </Flex>
+      </Stack>
+      <Stack>
+        <Flex direction="column" justify="space-between" gap={2}>
+          {chats.map((chat: any) => (
+            <Link key={chat.chat_id} href={`/chat/${chat.chat_id}`}>
+              <Box
+                py={2}
+                px={2}
+                _hover={{ bg: 'rgb(237, 235, 230,0.3)' }}
+                cursor="pointer"
+                transition="background-color 0.3s ease"
+                rounded={5}
+              >
+                {chat.name || 'New Chat'}
+              </Box>
+            </Link>
+          ))}
+        </Flex>
+      </Stack>
       <Stack direction="column" mb="auto" mt="8px">
-        <Box ps="0px" pe={{ md: '0px', '2xl': '0px' }}>
+        {/* <Box ps="0px" pe={{ md: '0px', '2xl': '0px' }}>
           <Links routes={routes} />
-        </Box>
+        </Box> */}
       </Stack>
 
-      <Flex
-        mt="8px"
-        justifyContent="center"
-        alignItems="center"
-        boxShadow={shadowPillBar}
-        borderRadius="30px"
-        p="14px"
-      >
-        <NextAvatar h="34px" w="34px" src={avatar4} me="10px" />
-        <Text color={textColor} fontSize="xs" fontWeight="600" me="10px">
-          Adela Parkson
-        </Text>
-        <Menu>
-          <MenuButton
-            as={Button}
+      {value.isLoggedIn && (
+        <Flex
+          mt="8px"
+          justifyContent="center"
+          alignItems="center"
+          boxShadow={shadowPillBar}
+          borderRadius="30px"
+          gap={2}
+          p="14px"
+        >
+          <Button
             variant="transparent"
-            aria-label=""
             border="1px solid"
             borderColor={borderColor}
             borderRadius="full"
             w="34px"
             h="34px"
             px="0px"
-            p="0px"
             minW="34px"
-            me="10px"
             justifyContent={'center'}
             alignItems="center"
-            color={iconColor}
+            onClick={logoutHandler}
           >
-            <Flex align="center" justifyContent="center">
-              <Icon
-                as={MdOutlineSettings}
-                width="18px"
-                height="18px"
-                color="inherit"
-              />
-            </Flex>
-          </MenuButton>
-          <MenuList
-            ms="-20px"
-            py="25px"
-            ps="20px"
-            pe="20px"
-            w="246px"
-            borderRadius="16px"
-            transform="translate(-19px, -62px)!important"
-            border="0px"
-            boxShadow={shadow}
-            bg={bgColor}
-          >
-            <Box mb="30px">
-              <Flex align="center" w="100%" cursor={'not-allowed'}>
-                <Icon
-                  as={MdOutlineManageAccounts}
-                  width="24px"
-                  height="24px"
-                  color={gray}
-                  me="12px"
-                  opacity={'0.4'}
-                />
-                <Text
-                  color={gray}
-                  fontWeight="500"
-                  fontSize="sm"
-                  opacity={'0.4'}
-                >
-                  Profile Settings
-                </Text>
-                <Link
-                  ms="auto"
-                  isExternal
-                  href="https://horizon-ui.com/ai-template"
-                >
-                  <Badge
-                    display={{ base: 'flex', lg: 'none', xl: 'flex' }}
-                    colorScheme="brand"
-                    borderRadius="25px"
-                    color="brand.500"
-                    textTransform={'none'}
-                    letterSpacing="0px"
-                    px="8px"
-                  >
-                    PRO
-                  </Badge>
-                </Link>
-              </Flex>
-            </Box>
-            <Box mb="30px">
-              <Flex cursor={'not-allowed'} align="center">
-                <Icon
-                  as={LuHistory}
-                  width="24px"
-                  height="24px"
-                  color={gray}
-                  opacity="0.4"
-                  me="12px"
-                />
-                <Text color={gray} fontWeight="500" fontSize="sm" opacity="0.4">
-                  History
-                </Text>
-                <Link
-                  ms="auto"
-                  isExternal
-                  href="https://horizon-ui.com/ai-template"
-                >
-                  <Badge
-                    display={{ base: 'flex', lg: 'none', xl: 'flex' }}
-                    colorScheme="brand"
-                    borderRadius="25px"
-                    color="brand.500"
-                    textTransform={'none'}
-                    letterSpacing="0px"
-                    px="8px"
-                  >
-                    PRO
-                  </Badge>
-                </Link>
-              </Flex>
-            </Box>
-            <Box mb="30px">
-              <Flex cursor={'not-allowed'} align="center">
-                <Icon
-                  as={RoundedChart}
-                  width="24px"
-                  height="24px"
-                  color={gray}
-                  opacity="0.4"
-                  me="12px"
-                />
-                <Text color={gray} fontWeight="500" fontSize="sm" opacity="0.4">
-                  Usage
-                </Text>
-                <Link
-                  ms="auto"
-                  isExternal
-                  href="https://horizon-ui.com/ai-template"
-                >
-                  <Badge
-                    display={{ base: 'flex', lg: 'none', xl: 'flex' }}
-                    colorScheme="brand"
-                    borderRadius="25px"
-                    color="brand.500"
-                    textTransform={'none'}
-                    letterSpacing="0px"
-                    px="8px"
-                  >
-                    PRO
-                  </Badge>
-                </Link>
-              </Flex>
-            </Box>
-            <Box>
-              <Flex cursor={'not-allowed'} align="center">
-                <Icon
-                  as={IoMdPerson}
-                  width="24px"
-                  height="24px"
-                  color={gray}
-                  opacity="0.4"
-                  me="12px"
-                />
-                <Text color={gray} fontWeight="500" fontSize="sm" opacity="0.4">
-                  My Plan
-                </Text>
-                <Link
-                  ms="auto"
-                  isExternal
-                  href="https://horizon-ui.com/ai-template"
-                >
-                  <Badge
-                    display={{ base: 'flex', lg: 'none', xl: 'flex' }}
-                    colorScheme="brand"
-                    borderRadius="25px"
-                    color="brand.500"
-                    textTransform={'none'}
-                    letterSpacing="0px"
-                    px="8px"
-                  >
-                    PRO
-                  </Badge>
-                </Link>
-              </Flex>
-            </Box>
-          </MenuList>
-        </Menu>
-        <Button
-          variant="transparent"
-          border="1px solid"
-          borderColor={borderColor}
-          borderRadius="full"
-          w="34px"
-          h="34px"
-          px="0px"
-          minW="34px"
-          justifyContent={'center'}
-          alignItems="center"
-        >
-          <Icon as={FiLogOut} width="16px" height="16px" color="inherit" />
-        </Button>
-      </Flex>
+            <Icon as={FiLogOut} width="16px" height="16px" color="inherit" />
+          </Button>
+        </Flex>
+      )}
     </Flex>
   );
 }

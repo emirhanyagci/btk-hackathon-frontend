@@ -6,7 +6,6 @@ import {
   Center,
   Flex,
   Icon,
-  Link,
   Menu,
   MenuButton,
   MenuItem,
@@ -19,12 +18,15 @@ import { SearchBar } from '@/components/navbar/searchBar/SearchBar';
 import { SidebarResponsive } from '@/components/sidebar/Sidebar';
 import { IoMdMoon, IoMdSunny } from 'react-icons/io';
 import { MdInfoOutline } from 'react-icons/md';
-import NavLink from '../link/NavLink';
 import routes from '@/routes';
+import Link from 'next/link';
+import { UseAuthContext } from '@/contexts/AuthContext';
 
 export default function HeaderLinks(props: { secondary: boolean }) {
   const { secondary } = props;
   const { colorMode, toggleColorMode } = useColorMode();
+  const { value, setValue } = UseAuthContext();
+  const { isLoggedIn } = value;
   // Chakra Color Mode
   const navbarIcon = useColorModeValue('gray.500', 'white');
   let menuBg = useColorModeValue('white', 'navy.800');
@@ -53,107 +55,11 @@ export default function HeaderLinks(props: { secondary: boolean }) {
       bg={menuBg}
       flexWrap={secondary ? { base: 'wrap', md: 'nowrap' } : 'unset'}
       p="10px"
+      px="20px"
       borderRadius="30px"
       boxShadow={shadow}
     >
-      <SearchBar
-        mb={() => {
-          if (secondary) {
-            return { base: '10px', md: 'unset' };
-          }
-          return 'unset';
-        }}
-        me="10px"
-        borderRadius="30px"
-      />
       <SidebarResponsive routes={routes} />
-
-      <Menu>
-        <MenuButton p="0px">
-          <Icon
-            mt="6px"
-            as={MdInfoOutline}
-            color={navbarIcon}
-            w="18px"
-            h="18px"
-            me="10px"
-          />
-        </MenuButton>
-        <MenuList
-          boxShadow={shadow}
-          p="20px"
-          me={{ base: '30px', md: 'unset' }}
-          borderRadius="20px"
-          bg={menuBg}
-          border="none"
-          mt="22px"
-          minW={{ base: 'unset' }}
-          maxW={{ base: '360px', md: 'unset' }}
-        >
-          {/* <Flex bgImage={navImage} borderRadius="16px" mb="28px" alt="" /> */}
-          <Flex flexDirection="column">
-            <Link
-              isExternal
-              w="100%"
-              href="https://horizon-ui.com/ai-template/"
-            >
-              <Button
-                variant="primary"
-                py="20px"
-                px="16px"
-                fontSize="sm"
-                borderRadius="45px"
-                mb="10px"
-                w="100%"
-                h="54px"
-              >
-                Buy Horizon AI Template
-              </Button>
-            </Link>
-            <Link
-              isExternal
-              w="100%"
-              href="https://horizon-ui.com/docs-ai-template/"
-            >
-              <Button
-                bg={buttonBg}
-                border="1px solid"
-                color={textColor}
-                mt={{ base: '20px', md: '0px' }}
-                borderColor={useColorModeValue('gray.200', 'whiteAlpha.100')}
-                fontSize="sm"
-                borderRadius="45px"
-                w="100%"
-                minW="44px"
-                h="44px"
-                _placeholder={{ color: 'gray.500' }}
-                _hover={hoverButton}
-                _active={activeButton}
-                _focus={activeButton}
-              >
-                See Documentation
-              </Button>
-            </Link>
-            <Link
-              w="100%"
-              isExternal
-              href="https://github.com/horizon-ui/chatgpt-ai-template"
-            >
-              <Button
-                w="100%"
-                h="44px"
-                variant="no-hover"
-                color={textColor}
-                fontSize="sm"
-                borderRadius="45px"
-                bg="transparent"
-              >
-                Try Free Version
-              </Button>
-            </Link>
-          </Flex>
-        </MenuList>
-      </Menu>
 
       <Button
         variant="no-hover"
@@ -166,91 +72,29 @@ export default function HeaderLinks(props: { secondary: boolean }) {
         onClick={toggleColorMode}
       >
         <Icon
-          me="10px"
+          me={!isLoggedIn ? '10px' : '0px'}
           h="18px"
           w="18px"
           color={navbarIcon}
           as={colorMode === 'light' ? IoMdMoon : IoMdSunny}
         />
       </Button>
-      <Menu>
-        <MenuButton p="0px" style={{ position: 'relative' }}>
+      {!isLoggedIn && (
+        <Menu>
           <Box
             _hover={{ cursor: 'pointer' }}
             color="white"
-            bg="#11047A"
-            w="40px"
-            h="40px"
             borderRadius={'50%'}
           />
-          <Center top={0} left={0} position={'absolute'} w={'100%'} h={'100%'}>
-            <Text fontSize={'xs'} fontWeight="bold" color={'white'}>
-              AP
-            </Text>
+          <Center w={'100%'} h={'100%'}>
+            <Link href="/login">
+              <Text fontSize={'sm'} fontWeight="bold">
+                Login
+              </Text>
+            </Link>
           </Center>
-        </MenuButton>
-        <MenuList
-          boxShadow={shadow}
-          p="0px"
-          mt="10px"
-          borderRadius="20px"
-          bg={menuBg}
-          border="none"
-        >
-          <Flex w="100%" mb="0px">
-            <Text
-              ps="20px"
-              pt="16px"
-              pb="10px"
-              w="100%"
-              borderBottom="1px solid"
-              borderColor={borderColor}
-              fontSize="sm"
-              fontWeight="700"
-              color={textColor}
-            >
-              👋&nbsp; Hey, Adela
-            </Text>
-          </Flex>
-          <Flex flexDirection="column" p="10px">
-            <NavLink href="/settings">
-              <MenuItem
-                _hover={{ bg: 'none' }}
-                _focus={{ bg: 'none' }}
-                color={textColor}
-                borderRadius="8px"
-                px="14px"
-              >
-                <Text fontWeight="500" fontSize="sm">
-                  Profile Settings
-                </Text>
-              </MenuItem>
-            </NavLink>
-            <MenuItem
-              _hover={{ bg: 'none' }}
-              _focus={{ bg: 'none' }}
-              color={textColor}
-              borderRadius="8px"
-              px="14px"
-            >
-              <Text fontWeight="500" fontSize="sm">
-                Newsletter Settings
-              </Text>
-            </MenuItem>
-            <MenuItem
-              _hover={{ bg: 'none' }}
-              _focus={{ bg: 'none' }}
-              color="red.400"
-              borderRadius="8px"
-              px="14px"
-            >
-              <Text fontWeight="500" fontSize="sm">
-                Log out
-              </Text>
-            </MenuItem>
-          </Flex>
-        </MenuList>
-      </Menu>
+        </Menu>
+      )}
     </Flex>
   );
 }
