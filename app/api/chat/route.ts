@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { NextRequest } from 'next/server';
 
-export async function GET(req: Request): Promise<any> {
+export async function GET(req: NextRequest): Promise<any> {
   const data = await req.json();
 
   const { token } = data;
