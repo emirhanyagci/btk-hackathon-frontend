@@ -14,7 +14,7 @@ yarn.lock
 # production
 /build
 build
-
+.env
 # misc
 .DS_Store
 .env.local
