@@ -4,6 +4,7 @@ import { Flex, useColorModeValue } from '@chakra-ui/react';
 
 import { HorizonLogo } from '@/components/icons/Icons';
 import { HSeparator } from '@/components/separator/Separator';
+import { CaseWiseLogo } from '@/components/icons/Logo';
 
 export function SidebarBrand() {
   //   Chakra color mode
@@ -11,7 +12,7 @@ export function SidebarBrand() {
 
   return (
     <Flex alignItems="center" flexDirection="column">
-      <HorizonLogo h="26px" w="146px" my="30px" color={logoColor} />
+      <CaseWiseLogo h="50px" w="146px" mb="20px" color={logoColor} />
       <HSeparator mb="20px" w="284px" />
     </Flex>
   );

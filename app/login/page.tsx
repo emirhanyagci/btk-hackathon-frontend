@@ -29,7 +29,6 @@ export default function SimpleCard() {
     try {
       const res = await axios.post('/api/login', { email, password });
       setValue({ isLoggedIn: true, token: res.data });
-      console.log(res);
 
       router.push('/');
     } catch (e) {

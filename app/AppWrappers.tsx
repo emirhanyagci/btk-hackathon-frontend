@@ -14,7 +14,6 @@ import { usePathname } from 'next/navigation';
 export default function AppWrappers({ children }: { children: ReactNode }) {
   const { value } = UseAuthContext();
   const pathname = usePathname();
-  console.log(pathname);
 
   const { isLoggedIn } = value;
   if (!isLoggedIn && pathname !== '/login' && pathname !== '/signup')

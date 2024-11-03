@@ -61,7 +61,6 @@ export default function Chat() {
     const messageHistory = await axios.get('/api/message', {
       params: { chatId, token },
     });
-    console.log(messageHistory.data);
     if (!messageHistory.data) return;
     setMessages([...messageHistory.data]);
     setTimeout(() => {
@@ -92,9 +91,6 @@ export default function Chat() {
     };
 
     const res = await axios.post('/api/message', body);
-    console.log(res);
-
-    // console.log(11, response);
 
     if (res.status !== 200) {
       setLoading(false);

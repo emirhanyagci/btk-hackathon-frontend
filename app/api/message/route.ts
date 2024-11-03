@@ -23,7 +23,6 @@ export async function GET(req: NextRequest): Promise<any> {
 }
 export async function POST(req: Request): Promise<any> {
   const data = await req.json();
-  console.log(data);
 
   const { chat_id, message, category, token } = data;
 
