@@ -20,10 +20,13 @@ import {
 
 import Bg from '../public/img/chat/bg-image.png';
 import { UseAuthContext } from '@/contexts/AuthContext';
+import axios from 'axios';
 
 export default function Chat() {
   const { value } = UseAuthContext();
+
   const { isLoggedIn } = value;
+
   return (
     <Flex
       w="100%"
@@ -55,7 +58,7 @@ export default function Chat() {
           width={150}
           colorScheme="green"
         >
-          {!isLoggedIn ? 'Start Chat' : 'Login to start chat'}
+          {isLoggedIn ? 'Start Chat' : 'Login to start chat'}
         </Badge>
       </Flex>
     </Flex>
