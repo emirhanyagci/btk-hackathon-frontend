@@ -28,7 +28,7 @@ import { UseAuthContext } from '@/contexts/AuthContext';
 import axios from 'axios';
 import { RESPONSE_LIMIT_DEFAULT } from 'next/dist/server/api-utils';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 // FUNCTIONS
 
 interface SidebarContent extends PropsWithChildren {
@@ -61,15 +61,13 @@ function SidebarContent(props: SidebarContent) {
       const res = await axios.get('/api/chats', {
         params: { token },
       });
-      console.log(res.data);
-
-      setChats([...res.data]);
+      if (res.data) setChats([...res.data]);
     } catch (e) {
       console.log(e);
     }
   }
   useEffect(() => {
-    if (!isLoggedIn) return;
+    setChats([]);
     fetchChats();
   }, [isLoggedIn]);
   async function newChatHandler() {
@@ -77,9 +75,10 @@ function SidebarContent(props: SidebarContent) {
       const res = await axios.post('/api/chat', {
         token,
       });
-      fetchChats();
+      console.log(`/chat/${res.data}`);
 
-      console.log(res);
+      fetchChats();
+      router.push(`/chat/${res.data}`);
     } catch (e) {
       console.log(e);
     }

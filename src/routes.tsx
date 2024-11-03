@@ -14,6 +14,11 @@ import { RoundedChart } from '@/components/icons/Icons';
 // Auth Imports
 import { IRoute } from './types/navigation';
 
-const routes: IRoute[] = [];
+const routes: IRoute[] = [
+  {
+    name: 'Chat',
+    path: '/',
+  },
+];
 
 export default routes;
